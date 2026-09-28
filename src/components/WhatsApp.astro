@@ -1,0 +1,24 @@
+---
+import Icon from './Icon.astro';
+import { SITE, UI } from '../content/site';
+---
+<a
+  href={SITE.whatsapp}
+  target="_blank"
+  rel="noopener"
+  class="wa fixed z-40 inline-flex size-14 items-center justify-center rounded-full text-white"
+  aria-label={`${UI.whatsapp} ${UI.newTab}`}
+>
+  <Icon name="whatsapp" class="size-7" />
+</a>
+
+<style>
+  .wa {
+    right: max(1.25rem, env(safe-area-inset-right));
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+    background: var(--color-whatsapp);
+    box-shadow: 0 10px 30px -8px rgb(0 0 0 / 0.45);
+    transition: transform 180ms ease;
+  }
+  .wa:hover { transform: translateY(-2px); }
+</style>

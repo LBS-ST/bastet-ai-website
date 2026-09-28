@@ -1,46 +1,29 @@
-# Astro Starter Kit: Basics
+# bastet-tech.ai
 
-```sh
-npm create astro@latest -- --template basics
-```
+Static Astro 7 + Tailwind CSS 4 site for Bastet AI. Spec: `CLAUDE.md`. Copy source: `reference/content.md`.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Commands
 
-## 🚀 Project Structure
+| Command | Action |
+| :-- | :-- |
+| `npm install` | Install dependencies (Node 22) |
+| `npm run dev` | Dev server |
+| `npm run build` | Build to `dist/` |
+| `npm run build:all` | Type check + build + `scripts/verify.mjs` (SEO, JSON-LD, PDFs, no CJK/Unsplash) |
+| `npm run preview` | Serve `dist/` locally |
+| `node scripts/prepare-assets.mjs` | Re-derive images from `reference/assets/` (outputs are committed) |
 
-Inside of your Astro project, you'll see the following folders and files:
+Cloudflare Pages: build `npm run build`, output `dist`, Node 22.
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+## Where things live
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+- `src/content/site.ts`: every visitor-facing string, SEO titles/descriptions, routes, tracking IDs.
+- `src/content/flythrough.ts`: homepage hero copy + the Stage 2 beat/chapter timeline.
+- `src/components/FlythroughHero.astro`: hero. Stage 1 poster; the Stage 2 canvas mounts at the `TODO(Stage 2)` comment.
+- `src/lib/schema.ts`: JSON-LD per page.
+- `src/pages/sitemap.xml.ts`: the 7-URL sitemap. `public/robots.txt`, `public/llms.txt`, `public/_headers`.
 
-## 🧞 Commands
+## Notes
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- `build.format: 'file'` on purpose: Pages serves `solution.html` at `/solution` without a slash redirect, so canonicals match served URLs.
+- Several supplied product screenshots contained Chinese UI text. `scripts/prepare-assets.mjs` crops that chrome away and blurs the few glyphs inside photos; originals stay untouched in `reference/assets/`.

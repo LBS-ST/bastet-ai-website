@@ -1,0 +1,14 @@
+---
+// Asymmetric section opener: heading left, intro right, baseline-aligned on desktop.
+interface Props {
+  title: string;
+  intro?: string;
+  id?: string;
+  class?: string;
+}
+const { title, intro, id, class: cls } = Astro.props;
+---
+<div class:list={['grid gap-5 md:grid-cols-12 md:items-end md:gap-8', cls]}>
+  <h2 id={id} class="t-h2 md:col-span-7">{title}</h2>
+  {intro && <p class="t-lede md:col-span-5 md:col-start-8 lg:col-span-4 lg:col-start-9">{intro}</p>}
+</div>

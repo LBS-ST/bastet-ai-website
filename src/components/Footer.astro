@@ -1,0 +1,72 @@
+---
+import { Image } from 'astro:assets';
+import symbol from '../assets/brand/bastet-symbol.png';
+import Icon from './Icon.astro';
+import { FOOTER, SITE, UI } from '../content/site';
+const year = new Date().getFullYear();
+---
+<footer class="surface-abyss border-t border-white/5 pb-[max(2rem,env(safe-area-inset-bottom))] pt-16 lg:pt-20">
+  <div class="wrap">
+    <div class="grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-12 md:gap-8">
+      <div class="col-span-2 md:col-span-6 lg:col-span-5">
+        <ul class="flex gap-2" aria-label="Social media">
+          <li>
+            <a href={SITE.linkedin} target="_blank" rel="noopener" class="social" aria-label={`${UI.linkedin} ${UI.newTab}`}>
+              <Icon name="linkedin" class="size-5" />
+            </a>
+          </li>
+          <li>
+            <a href={SITE.facebook} target="_blank" rel="noopener" class="social" aria-label={`${UI.facebook} ${UI.newTab}`}>
+              <Icon name="facebook" class="size-5" />
+            </a>
+          </li>
+        </ul>
+        <p class="mt-10 flex items-center gap-3 font-display text-2xl font-semibold tracking-tight text-white">
+          <Image src={symbol} alt="" width={36} class="h-auto w-9" />
+          {FOOTER.brand}
+        </p>
+        <p class="mt-4 max-w-md text-[0.9375rem] leading-relaxed">{FOOTER.tagline}</p>
+      </div>
+
+      <nav aria-labelledby="footer-quick" class="md:col-span-3 lg:col-start-8">
+        <h2 id="footer-quick" class="font-display text-base font-semibold text-white">{FOOTER.quickLinks.title}</h2>
+        <ul class="mt-4 space-y-1">
+          {FOOTER.quickLinks.items.map((l) => (
+            <li>
+              <a
+                href={l.href}
+                class="inline-flex min-h-10 items-center text-[0.9375rem] transition-colors hover:text-white"
+                {...(l.external ? { target: '_blank', rel: 'noopener' } : {})}
+              >
+                {l.label}
+                {l.external && <span class="sr-only"> {UI.newTab}</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="md:col-span-3 lg:col-span-2">
+        <h2 class="font-display text-base font-semibold text-white">{FOOTER.contact.title}</h2>
+        <a href={`mailto:${FOOTER.contact.email}`} class="mt-4 inline-flex min-h-10 items-center break-all text-[0.9375rem] transition-colors hover:text-white">{FOOTER.contact.email}</a>
+      </div>
+    </div>
+
+    <p class="hairline-t mt-16 pt-8 text-sm text-fog/80">{FOOTER.copyright(year)}</p>
+  </div>
+</footer>
+
+<style>
+  .social {
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.18);
+    transition: box-shadow 180ms ease, background-color 180ms ease;
+  }
+  .social:hover { background: var(--color-blue); box-shadow: inset 0 0 0 1px var(--color-blue); }
+</style>

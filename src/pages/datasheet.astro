@@ -1,0 +1,72 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { DATASHEET } from '../content/site';
+import { datasheetSchema } from '../lib/schema';
+
+const { hero, button, products } = DATASHEET;
+---
+<Base page="datasheet" schema={datasheetSchema}>
+  <PageHero title={hero.title} sub={hero.sub} compact />
+
+  <section class="surface-light pb-24 pt-6 lg:pb-32 lg:pt-10" aria-labelledby="page-title">
+    <div class="wrap">
+      <!-- A spec-sheet index: one row per product, scannable by category and name. -->
+      <ul class="sheets">
+        {products.map((p) => (
+          <li class="sheet">
+            <p class="sheet-cat">{p.category}</p>
+            <h2 class="sheet-name">{p.name}</h2>
+            <p class="sheet-desc">{p.description}</p>
+            <a
+              href={`/datasheets/${p.file}`}
+              class="sheet-dl btn btn-outline-dark"
+              download
+              type="application/pdf"
+              aria-label={`${button}: ${p.name}`}
+            >
+              <Icon name="download" class="size-5" />
+              {button}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .sheet {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.375rem;
+    padding-block: 1.75rem;
+    border-bottom: 1px solid rgb(26 35 51 / 0.12);
+  }
+  .sheet:first-child { border-top: 1px solid rgb(26 35 51 / 0.12); }
+  .sheet-cat {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-blue);
+  }
+  .sheet-name {
+    font-size: 1.3125rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+  }
+  .sheet-desc { max-width: 44ch; }
+  .sheet-dl { justify-self: start; margin-top: 1rem; }
+
+  @media (min-width: 56rem) {
+    .sheet {
+      grid-template-columns: 8rem minmax(0, 1.1fr) minmax(0, 1fr) auto;
+      align-items: center;
+      column-gap: 2rem;
+      padding-block: 1.5rem;
+    }
+    .sheet-dl { margin-top: 0; }
+    .sheet:hover { background: linear-gradient(90deg, transparent, rgb(33 115 217 / 0.04) 20%, rgb(33 115 217 / 0.04) 80%, transparent); }
+  }
+</style>

@@ -1,0 +1,179 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Icon from '../components/Icon.astro';
+import { SOLUTION, UI } from '../content/site';
+import { solutionSchema } from '../lib/schema';
+
+const screens = import.meta.glob<{ default: ImageMetadata }>('../assets/screens/*.png', { eager: true });
+const shot = (name: string) => screens[`../assets/screens/${name}.png`].default;
+
+const { hero, what, tech, visualize, aiBox, process, cta } = SOLUTION;
+---
+<Base page="solution" schema={solutionSchema}>
+  <PageHero title={hero.title} sub={hero.sub} backdrop />
+
+  <!-- What is Bastet? -->
+  <section class="surface-light band" aria-labelledby="what-title">
+    <div class="wrap grid gap-8 lg:grid-cols-12">
+      <h2 id="what-title" class="t-h2 lg:col-span-4">{what.title}</h2>
+      <div class="space-y-6 text-lg leading-relaxed lg:col-span-7 lg:col-start-6">
+        {what.paragraphs.map((p, i) => <p class:list={{ 't-lede text-night': i === 0 }}>{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Technology -->
+  <section class="surface-night band" aria-labelledby="tech-title">
+    <div class="wrap">
+      <SectionHead id="tech-title" title={tech.title} intro={tech.intro} />
+      <ul class="mt-14 grid gap-px overflow-hidden rounded-lg bg-line sm:grid-cols-2 lg:mt-20 lg:grid-cols-4">
+        {tech.items.map((t) => (
+          <li class="bg-night p-7 lg:p-8">
+            <Icon name={t.icon} class="size-7 text-glow" />
+            <h3 class="t-h3 mt-8">{t.title}</h3>
+            <p class="mt-2">{t.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Visualize: product evidence -->
+  <section class="surface-abyss band" aria-labelledby="visualize-title">
+    <div class="wrap">
+      <SectionHead id="visualize-title" title={visualize.title} intro={visualize.intro} />
+
+      <div class="mt-14 flex flex-col gap-6 rounded-lg bg-raised p-6 sm:flex-row sm:items-center sm:justify-between lg:mt-20 lg:p-8">
+        <h3 class="t-h3">{visualize.app.title}</h3>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <a href={visualize.app.ios.href} target="_blank" rel="noopener" class="btn btn-light">
+            <Icon name="apple" class="size-5" />{visualize.app.ios.label}<span class="sr-only"> {UI.newTab}</span>
+          </a>
+          <a href={visualize.app.android.href} target="_blank" rel="noopener" class="btn btn-ghost">
+            <Icon name="play" class="size-4" />{visualize.app.android.label}<span class="sr-only"> {UI.newTab}</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="mt-20 space-y-24 lg:mt-28 lg:space-y-36">
+        {visualize.screens.map((s, i) => {
+          const pair = s.images.length > 1;
+          return (
+            <article class:list={['grid items-center gap-10 lg:grid-cols-12 lg:gap-12', { 'lg:[&>figure]:order-2': i % 2 === 1 && !pair }]}>
+              <figure class:list={[pair ? 'lg:col-span-12' : 'lg:col-span-8']}>
+                <div class:list={['grid gap-8', { 'sm:grid-cols-2 sm:items-start': pair }]}>
+                  {s.images.map((name) => (
+                    <div class="plate bracket">
+                      <Image src={shot(name)} alt={s.title} widths={[640, 960, 1400]} sizes={pair ? '(min-width: 40rem) 50vw, 100vw' : '(min-width: 64rem) 66vw, 100vw'} loading="lazy" />
+                    </div>
+                  ))}
+                </div>
+              </figure>
+              <div class:list={[pair ? 'lg:col-span-12 lg:grid lg:grid-cols-12 lg:gap-12' : 'lg:col-span-4']}>
+                <h3 class:list={['t-h3 !text-2xl', { 'lg:col-span-5': pair }]}>{s.title}</h3>
+                <div class:list={{ 'lg:col-span-7': pair }}>
+                  <p class="mt-3 text-lg leading-relaxed lg:mt-0 lg:pt-1">{s.caption}</p>
+                  {s.cta && (
+                    <a href={s.cta.href} target="_blank" rel="noopener" class="btn btn-primary mt-8">
+                      {s.cta.label}<Icon name="external" class="size-4" /><span class="sr-only"> {UI.newTab}</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- AI-in-a-Box -->
+  <section class="surface-mist band" aria-labelledby="aibox-title">
+    <div class="wrap">
+      <SectionHead id="aibox-title" title={aiBox.title} intro={aiBox.intro} />
+      <div class="mt-14 grid gap-8 md:grid-cols-12 md:items-start lg:mt-20">
+        <div class="plate bracket md:col-span-7">
+          <Image src={shot(aiBox.images[0])} alt={aiBox.title} widths={[640, 960, 1400]} sizes="(min-width: 48rem) 58vw, 100vw" loading="lazy" />
+        </div>
+        <div class="plate bracket md:col-span-5">
+          <Image src={shot(aiBox.images[1])} alt={aiBox.title} widths={[480, 800, 1200]} sizes="(min-width: 48rem) 42vw, 100vw" loading="lazy" />
+        </div>
+      </div>
+      <div class="mt-16 grid gap-10 lg:mt-24 lg:grid-cols-12 lg:gap-8">
+        <div class="lg:col-span-6">
+          <h3 class="t-h3 !text-2xl">{aiBox.subtitle}</h3>
+          <p class="mt-4 text-lg leading-relaxed">{aiBox.body}</p>
+        </div>
+        <ul class="grid gap-6 sm:grid-cols-3 lg:col-span-6 lg:grid-cols-1 lg:gap-0">
+          {aiBox.points.map((p) => (
+            <li class="flex gap-5 lg:border-b lg:border-night/12 lg:py-6 lg:first:pt-0">
+              <span class="grid size-11 shrink-0 place-items-center rounded-lg bg-night text-glow">
+                <Icon name={p.icon} class="size-5" />
+              </span>
+              <div>
+                <h4 class="font-display text-lg font-semibold">{p.title}</h4>
+                <p class="mt-1">{p.body}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process: a true sequence -->
+  <section class="surface-night band" aria-labelledby="process-title">
+    <div class="wrap grid gap-12 lg:grid-cols-12 lg:gap-8">
+      <h2 id="process-title" class="t-h2 lg:sticky lg:top-[calc(var(--header-h)+2rem)] lg:col-span-5 lg:self-start">{process.title}</h2>
+      <ol class="process lg:col-span-6 lg:col-start-7">
+        {process.steps.map((s, i) => (
+          <li class="process-step">
+            <span class="process-node" aria-hidden="true">{i + 1}</span>
+            <h3 class="t-h3">{s.title}</h3>
+            <p class="mt-3 text-lg leading-relaxed">{s.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <CtaBand title={cta.title} body={cta.body} button={cta.button} />
+</Base>
+
+<style>
+  .process-step {
+    position: relative;
+    padding: 0 0 3.5rem 4.25rem;
+  }
+  .process-step:last-child { padding-bottom: 0; }
+  .process-node {
+    position: absolute;
+    left: 0;
+    top: -0.3rem;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-glow);
+    color: var(--color-glow);
+    font-family: var(--font-display);
+    font-weight: 600;
+    background: var(--color-night);
+  }
+  .process-step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 1.375rem;
+    top: 2.75rem;
+    bottom: 0.25rem;
+    width: 1px;
+    background: linear-gradient(var(--color-glow), var(--color-line));
+    opacity: 0.6;
+  }
+</style>

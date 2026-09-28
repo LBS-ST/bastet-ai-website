@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { NAV_CTA, UI } from '../content/site';
+---
+<Base page={null} title={`${UI.notFound.title} — Bastet AI`}>
+  <div class="nf">
+    <PageHero title={UI.notFound.title}>
+      <div class="mt-10 flex flex-col gap-3 sm:flex-row">
+        <a href="/" class="btn btn-primary">{UI.notFound.back}</a>
+        <a href={NAV_CTA.href} class="btn btn-ghost">{NAV_CTA.label}</a>
+      </div>
+    </PageHero>
+  </div>
+</Base>
+
+<style>
+  .nf :global(.page-hero) { min-height: 78svh; display: flex; align-items: center; }
+</style>

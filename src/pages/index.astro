@@ -1,11 +1,163 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Base from '../layouts/Base.astro';
+import FlythroughHero from '../components/FlythroughHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Faq from '../components/Faq.astro';
+import Icon from '../components/Icon.astro';
+import { HOME } from '../content/site';
+import { homeSchema } from '../lib/schema';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const { solutions, howItWorks, features, cta, testimonials } = HOME;
+const [lead, ...rest] = testimonials.items;
 ---
+<Base page="home" schema={homeSchema}>
+  <FlythroughHero />
 
-<Layout>
-	<Welcome />
-</Layout>
+  <!-- Solutions -->
+  <section id="solutions" class="surface-night band" aria-labelledby="solutions-title">
+    <div class="wrap">
+      <SectionHead id="solutions-title" title={solutions.title} intro={solutions.intro} />
+      <ul class="mt-14 grid md:grid-cols-3 lg:mt-20">
+        {solutions.items.map((s) => (
+          <li class="solution">
+            <span class="grid size-12 place-items-center rounded-lg bg-raised text-sky">
+              <Icon name={s.icon} class="size-6" />
+            </span>
+            <h3 class="t-h3 mt-6">{s.title}</h3>
+            <p class="mt-3">{s.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- How it works: a true sequence, so it is numbered -->
+  <section class="surface-mist band" aria-labelledby="how-title">
+    <div class="wrap">
+      <SectionHead id="how-title" title={howItWorks.title} intro={howItWorks.intro} />
+      <ol class="steps mt-14 grid gap-10 md:grid-cols-3 md:gap-8 lg:mt-20">
+        {howItWorks.steps.map((s, i) => (
+          <li class="step">
+            <span class="step-node" aria-hidden="true">{i + 1}</span>
+            <h3 class="t-h3 mt-6">{s.title}</h3>
+            <p class="mt-2 max-w-[30ch]">{s.body}</p>
+          </li>
+        ))}
+      </ol>
+      <a href={howItWorks.cta.href} class="btn btn-outline-dark mt-14">{howItWorks.cta.label}</a>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="surface-night band" aria-labelledby="features-title">
+    <div class="wrap grid gap-12 lg:grid-cols-12 lg:gap-8">
+      <div class="lg:col-span-5">
+        <h2 id="features-title" class="t-h2">{features.title}</h2>
+        <p class="t-lede mt-5 max-w-[26rem]">{features.intro}</p>
+        <a href={features.cta.href} class="btn btn-ghost mt-9 hidden lg:inline-flex">{features.cta.label}</a>
+      </div>
+      <ul class="lg:col-span-7">
+        {features.items.map((f) => (
+          <li class="flex gap-5 border-b border-line py-8 first:border-t first:border-line sm:gap-7">
+            <Icon name={f.icon} class="mt-0.5 size-7 shrink-0 text-glow" />
+            <div>
+              <h3 class="t-h3">{f.title}</h3>
+              <p class="mt-2 max-w-[44ch]">{f.body}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <a href={features.cta.href} class="btn btn-ghost justify-self-start lg:hidden">{features.cta.label}</a>
+    </div>
+  </section>
+
+  <CtaBand title={cta.title} body={cta.body} button={cta.button} />
+
+  <!-- Testimonials -->
+  <section class="surface-light band" aria-labelledby="testimonials-title">
+    <div class="wrap">
+      <SectionHead id="testimonials-title" title={testimonials.title} intro={testimonials.intro} />
+      <div class="mt-14 grid gap-12 lg:mt-20 lg:grid-cols-12 lg:gap-8">
+        <figure class="lg:col-span-7 lg:pr-10">
+          <span class="block font-display text-7xl leading-none text-blue" aria-hidden="true">&ldquo;</span>
+          <blockquote class="mt-2 font-display text-2xl font-medium leading-snug tracking-tight text-night lg:text-[2rem] lg:leading-[1.25]">
+            <p>{lead.quote}</p>
+          </blockquote>
+          <figcaption class="mt-8 text-[0.9375rem]">
+            <span class="block font-semibold text-night">{lead.role}</span>
+            <span>{lead.org}</span>
+          </figcaption>
+        </figure>
+        <div class="grid gap-10 lg:col-span-5">
+          {rest.map((t) => (
+            <figure class="border-t border-night/12 pt-8">
+              <blockquote class="text-lg leading-relaxed text-night/90"><p>&ldquo;{t.quote}&rdquo;</p></blockquote>
+              <figcaption class="mt-5 text-[0.9375rem]">
+                <span class="block font-semibold text-night">{t.role}</span>
+                <span>{t.org}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Faq />
+</Base>
+
+<style>
+  .solution {
+    padding-block: 2.25rem;
+    border-top: 1px solid var(--color-line);
+  }
+  @media (min-width: 48rem) {
+    .solution { padding: 0 2rem 0 0; border-top: 0; }
+    .solution + .solution { padding-left: 2rem; border-left: 1px solid var(--color-line); }
+  }
+  @media (min-width: 64rem) {
+    .solution { padding-right: 3rem; }
+    .solution + .solution { padding-left: 3rem; }
+  }
+
+  /* Step track: a sensor line connecting the nodes (vertical on phones, horizontal above). */
+  .step { position: relative; padding-left: 4rem; }
+  .step-node {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    background: var(--color-night);
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 600;
+    box-shadow: 0 0 0 6px var(--color-mist);
+    z-index: 1;
+  }
+  .step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 1.375rem;
+    top: 2.75rem;
+    bottom: -2.5rem;
+    width: 1px;
+    background: rgb(26 35 51 / 0.2);
+  }
+  @media (min-width: 48rem) {
+    .step { padding-left: 0; padding-top: 4.25rem; }
+    .step-node { left: 0; }
+    .step:not(:last-child)::before {
+      left: 2.75rem;
+      right: -2rem;
+      top: 1.375rem;
+      bottom: auto;
+      width: auto;
+      height: 1px;
+    }
+  }
+</style>

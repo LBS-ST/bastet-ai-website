@@ -1,0 +1,152 @@
+---
+// Homepage hero. Stage 1 = static poster; Stage 2 = scroll-scrubbed fly-through.
+//
+// Anatomy (keep it when wiring Stage 2):
+//   section[data-hero]     → header glass/solid hook (Header.astro). In Stage 2 this becomes the
+//                            tall pinned track: height = sum(BEATS[].vh) * 100svh (+ mobileVh on phones).
+//   .flight-stage          → sticky full-viewport stage; poster now, canvas later.
+//   .flight-chapter        → semantic HTML copy per chapter (CHAPTERS in content/flythrough.ts).
+//                            Stage 1 renders only the at-rest chapter ("arrive").
+import { Picture } from 'astro:assets';
+import poster from '../assets/brand/hero-circuit.png';
+import { BEATS, FRAMES_ENABLED, HERO } from '../content/flythrough';
+
+// Two balanced lines so the detection bracket can hug the text (a wrapped inline-block
+// would otherwise stretch to the full column). Same string, only the break is fixed.
+const words = HERO.heading.split(' ');
+const cut = Math.floor(words.length / 2);
+const lines = [words.slice(0, cut).join(' '), words.slice(cut).join(' ')];
+---
+<section
+  class="flight relative isolate overflow-clip bg-abyss"
+  aria-labelledby="hero-title"
+  data-hero
+  data-flythrough
+  data-frames-enabled={String(FRAMES_ENABLED)}
+  data-beats={BEATS.length}
+>
+  <div class="flight-stage" data-flight-stage>
+    <!-- Poster: shown immediately; in Stage 2 it stays as the load / reduced-motion / failure fallback. -->
+    <Picture
+      src={poster}
+      formats={['avif']} fallbackFormat="webp"
+      widths={[768, 1280, 1910]}
+      sizes="(min-width: 48rem) 118vw, 100vw"
+      alt=""
+      loading="eager"
+      fetchpriority="high"
+      class="flight-poster"
+    />
+
+    {/*
+      TODO(Stage 2 — fly-through): mount the frame-sequence canvas here.
+        <canvas class="flight-canvas" data-flight-canvas aria-hidden="true"></canvas>
+      - Only when FRAMES_ENABLED && manifest && !prefers-reduced-motion.
+      - Cover-fit draw, backing store = viewport × min(devicePixelRatio, 2), per-beat focusX on phones.
+      - Piecewise scroll→frame map from BEATS (vh / mobileVh, from/to seconds × manifest.fps).
+      - Chapters fade in/hold/out inside their beats; hidden chapters get `inert`.
+      - Add a "skip the tour" link that jumps to #solutions.
+    */}
+
+    <div class="flight-scrim" aria-hidden="true"></div>
+  </div>
+
+  <div class="flight-chapter wrap" data-chapter="arrive">
+    <div class="max-w-[46rem]">
+      <h1 id="hero-title" class="t-display text-white">
+        <span class="bracket hero-lock">{lines[0]}<br />{lines[1]}</span>
+      </h1>
+      <p class="hero-sub mt-6 max-w-[35rem] text-fog sm:mt-7 lg:mt-9">{HERO.body}</p>
+      <div class="mt-8 flex flex-wrap gap-3 lg:mt-11">
+        <a href={HERO.primary.href} class="btn btn-primary">{HERO.primary.label}</a>
+        <a href={HERO.secondary.href} class="btn btn-ghost">{HERO.secondary.label}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .flight {
+    display: grid;
+    min-height: 100svh;
+  }
+  .flight-stage {
+    grid-area: 1 / 1;
+    position: relative;
+    min-height: 100svh;
+    overflow: hidden;
+  }
+  .flight-chapter {
+    grid-area: 1 / 1;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-top: calc(var(--header-h) + 2rem);
+    padding-bottom: max(3rem, env(safe-area-inset-bottom));
+  }
+
+  /* Phones: the lit hex sits in the top half, copy anchors to the bottom over a
+     bottom-up scrim (the same composition the Stage 2 chapters use on phones). */
+  .flight-poster :global(img),
+  :global(.flight-poster) {
+    position: absolute;
+    top: var(--header-h);
+    left: 0;
+    width: 100%;
+    height: 58%;
+    object-fit: cover;
+    object-position: 50% 45%;
+  }
+  .flight-scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to bottom, var(--color-abyss) 0%, transparent 14%),
+      linear-gradient(to top, var(--color-abyss) 42%, rgb(19 26 39 / 0.6) 62%, transparent 80%);
+  }
+
+  /* Wider screens: image fills the stage, hex shifted right of the headline. */
+  @media (min-width: 48rem) {
+    :global(.flight-poster) {
+      top: 0;
+      left: 16%;
+      width: 118%;
+      height: 100%;
+      object-position: 50% 50%;
+    }
+    .flight-scrim {
+      background:
+        linear-gradient(90deg, var(--color-abyss) 8%, rgb(19 26 39 / 0.82) 36%, rgb(19 26 39 / 0.15) 64%, transparent 80%),
+        linear-gradient(to top, var(--color-night) 0%, transparent 22%),
+        linear-gradient(to bottom, rgb(19 26 39 / 0.6) 0%, transparent 18%);
+    }
+    .flight-chapter {
+      justify-content: center;
+      padding-top: calc(var(--header-h) + 4rem);
+      padding-bottom: 6rem;
+    }
+  }
+
+  .hero-sub { font-size: 1.0625rem; line-height: 1.6; }
+  @media (min-width: 40rem) { .hero-sub { font-size: 1.1875rem; } }
+  @media (min-width: 64rem) { .hero-sub { font-size: 1.3125rem; } }
+
+  /* The one orchestrated moment: the detection bracket locks onto the headline on load. */
+  .hero-lock {
+    display: inline-block;
+    white-space: nowrap;
+    --bracket-gap: clamp(0.75rem, 1.4vw, 1.25rem);
+  }
+  .hero-lock::before {
+    --l: clamp(1rem, 2vw, 1.75rem);
+    animation: lock-on 900ms cubic-bezier(0.2, 0.7, 0.2, 1) 350ms both;
+  }
+  @keyframes lock-on {
+    0% { opacity: 0; transform: scale(1.14); }
+    55% { opacity: 1; }
+    70% { transform: scale(0.985); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+</style>

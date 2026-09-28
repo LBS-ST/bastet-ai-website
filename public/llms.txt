@@ -1,0 +1,68 @@
+# Bastet AI
+
+> Make the Pest Visible. Bastet is a professional Pesttech solutions leveraging AI, computer vision, and IoT sensors to automate monitoring and detection of pest activity. Move beyond traditional manual methods to intelligent, data-driven pest management.
+
+Legal name: Bastet AI Pesttech Limited
+Website: https://bastet-tech.ai
+Email: info@bastet-tech.ai
+Blog: https://blog.bastet-tech.ai
+LinkedIn: https://www.linkedin.com/company/bastet-tech/
+Facebook: https://www.facebook.com/profile.php?id=61583264173759
+Language: English
+
+AI-Enhanced Pest Control System built by experienced pest control and IT professionals. Real-world solutions from the field, bringing transparency and data-driven intelligence to facility management.
+
+## Solutions
+
+- Smart Rodent IOT Solution: Using PIR sensor to find out the root and source of rodent problem. Smart Trap alerts via email and mobile app push notification when the rat is caught.
+- AI in a Box: Using existing CCTV in your facility, install an AI box on the same network. The AI monitors 24/7 and captures pictures when rats come out.
+- Sticky Trap Image Analyze Tool: AI engine to rapidly process images of sticky traps, delivering structured, actionable data and expert contextual notes for real-time pest control interventions.
+
+## How It Works
+
+1. Deploy Smart Sensors: Install IoT sensors and AI-enabled cameras in strategic locations
+2. AI Detects Pests: Our AI automatically detects and monitors pest activity 24/7
+3. Get Actionable Reports: Access comprehensive data and insights through your dashboard
+
+## Pages
+
+- [Home](https://bastet-tech.ai/): Bastet provides AI vision and IoT smart pest control systems for commercial buildings.
+- [Solutions](https://bastet-tech.ai/solution): Explore Bastet's AI pest control platform: computer vision cameras, IoT smart traps, sticky trap analysis, and a unified dashboard for commercial facilities.
+- [Datasheets](https://bastet-tech.ai/datasheet): Download datasheets for Bastet AI's LoRa gateway, PIR sensors, smart trap sensors, AI box, and mobile platform.
+- [About](https://bastet-tech.ai/about): Bastet AI combines pest control veterans with IT engineers to deliver field-tested, data-driven smart pest management for commercial facilities.
+- [Contact](https://bastet-tech.ai/contact): Schedule a personalized demo of our AI vision and IoT pest monitoring solutions for your facility.
+- [Blog](https://blog.bastet-tech.ai): Articles on AI pest control, IoT monitoring, and smart facility pest management from the Bastet AI team.
+- [Privacy Policy](https://bastet-tech.ai/privacy)
+
+## Product datasheets (PDF)
+
+- [Bastet Platform Mobile App](https://bastet-tech.ai/datasheets/Bastet_Platform_Mobile_app.pdf) (Software): Mobile application for real-time pest monitoring and management
+- [Bastet LoRa Gateway](https://bastet-tech.ai/datasheets/Bastet_Lora_Gateway.pdf) (Gateway): Long-range wireless gateway for IoT sensor connectivity
+- [Bastet LoRa PIR Sensor](https://bastet-tech.ai/datasheets/Bastet_Lora_PIR.pdf) (Sensor): Long-range passive infrared motion detection sensor
+- [Bastet LoRa Trap Sensor](https://bastet-tech.ai/datasheets/Bastet_Lora_Trap_Sensor.pdf) (Sensor): Long-range wireless trap sensor for remote capture detection
+- [Bastet Sensing Camera](https://bastet-tech.ai/datasheets/Bastet_Sensing_Camera.pdf) (Camera): AI-powered camera for visual pest detection and analysis
+- [Bastet Zigbee Smart Plug](https://bastet-tech.ai/datasheets/Bastet_Zigbee_Smart_Plug.pdf) (Accessory): Smart plug for power management and device control
+- [Bastet Zigbee Trap Sensor Component](https://bastet-tech.ai/datasheets/Bastet_Zigbee_Trap_Sensor_Component.pdf) (Sensor): Component specifications for trap sensor integration
+- [Bastet Zigbee Trap Sensor](https://bastet-tech.ai/datasheets/Bastet_Zigbee_Trap_Sensor.pdf) (Sensor): Wireless trap sensor for real-time capture detection
+- [Bastet Zigbee PIR Sensor](https://bastet-tech.ai/datasheets/Bastet_Zigbee_PIR.pdf) (Sensor): Zigbee-enabled passive infrared motion sensor
+- [Bastet Zigbee Gateway](https://bastet-tech.ai/datasheets/Bastet_Zigbee_Gateway.pdf) (Gateway): Central hub for Zigbee device network management
+
+## FAQ
+
+### What is AI-powered pest control?
+AI-powered pest control uses computer vision and IoT sensors to detect, identify, and monitor pest activity in real time. Unlike traditional methods that rely on periodic manual inspections, our system provides 24/7 automated surveillance with instant alerts — catching problems early before they become infestations.
+
+### How does computer vision detect pests?
+Our AI in the Box system uses edge AI cameras with trained models to recognise rodent species, cockroaches, and other pests from images captured on sticky boards or in open areas. The AI classifies each detection, counts activity levels, and sends structured data to your dashboard — no human inspection needed.
+
+### Which industries use Bastet's solutions?
+Our solutions serve food manufacturing, commercial kitchens, logistics warehouses, shopping malls, commercial buildings, and government facilities. Any environment where pest compliance and early detection are critical benefits from automated AI monitoring.
+
+### How is this different from traditional pest control?
+Traditional pest control relies on scheduled visits and manual checks — often missing activity between inspections. Bastet provides continuous, data-driven monitoring with photographic evidence, trend analytics, and real-time alerts. This means faster response, better compliance records, and reduced chemical usage.
+
+### Do you integrate with existing facility management systems?
+Yes. Our platform provides API access and standard data exports that integrate with major facility management and ERP systems. You get a unified dashboard for all monitoring data, accessible via web and mobile app.
+
+### How do I get started with Bastet?
+Contact us at info@bastet-tech.ai or through our website. We'll assess your site, recommend the right camera and sensor mix, and handle installation. Most deployments are operational within 2–3 weeks, with ongoing AI model updates and support included.

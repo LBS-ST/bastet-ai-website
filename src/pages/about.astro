@@ -1,0 +1,100 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Icon from '../components/Icon.astro';
+import { ABOUT } from '../content/site';
+import { rich } from '../lib/rich';
+import { aboutSchema } from '../lib/schema';
+
+const { hero, story, mission, values, why, field, cta } = ABOUT;
+---
+<Base page="about" schema={aboutSchema}>
+  <PageHero title={hero.title} sub={hero.sub} backdrop />
+
+  <!-- Story + mission -->
+  <section class="surface-light band" aria-labelledby="story-title">
+    <div class="wrap grid gap-10 lg:grid-cols-12 lg:gap-8">
+      <h2 id="story-title" class="t-h2 lg:col-span-4">{story.title}</h2>
+      <div class="lg:col-span-7 lg:col-start-6">
+        <div class="space-y-6 text-lg leading-relaxed [&_strong]:font-semibold [&_strong]:text-night">
+          {story.paragraphs.map((p) => <p set:html={rich(p)} />)}
+        </div>
+        <p class="mt-10 border-l-2 border-blue pl-6 font-display text-2xl font-semibold leading-snug tracking-tight text-night lg:text-[1.75rem]">
+          {story.statement}
+        </p>
+      </div>
+    </div>
+
+    <div class="wrap mt-20 lg:mt-28">
+      <div class="mission relative overflow-clip rounded-xl bg-night px-7 py-12 sm:px-12 lg:grid lg:grid-cols-12 lg:gap-8 lg:px-16 lg:py-20">
+        <h3 class="t-h2 !text-white lg:col-span-4">{mission.title}</h3>
+        <p class="mt-6 text-lg leading-relaxed text-fog lg:col-span-8 lg:mt-0 lg:text-xl lg:leading-relaxed">{mission.body}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Values -->
+  <section class="surface-night band" aria-labelledby="values-title">
+    <div class="wrap">
+      <SectionHead id="values-title" title={values.title} intro={values.intro} />
+      <ul class="mt-14 grid gap-px overflow-hidden rounded-lg bg-line sm:grid-cols-2 lg:mt-20 lg:grid-cols-4">
+        {values.items.map((v) => (
+          <li class="bg-night p-7 lg:p-8">
+            <Icon name={v.icon} class="size-7 text-glow" />
+            <h3 class="t-h3 mt-8">{v.title}</h3>
+            <p class="mt-2">{v.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Why we built Bastet -->
+  <section class="surface-mist band" aria-labelledby="why-title">
+    <div class="wrap">
+      <h2 id="why-title" class="t-h2">{why.title}</h2>
+      <div class="mt-12 lg:mt-16">
+        {why.items.map((w) => (
+          <article class="grid gap-4 border-t border-night/12 py-10 lg:grid-cols-12 lg:gap-8 lg:py-14">
+            <h3 class="t-h3 !text-2xl lg:col-span-4">{w.title}</h3>
+            <p class="text-lg leading-relaxed lg:col-span-7 lg:col-start-6">{w.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Field-tested stats -->
+  <section class="surface-abyss band" aria-labelledby="field-title">
+    <div class="wrap grid gap-12 lg:grid-cols-12 lg:gap-8">
+      <div class="lg:col-span-5">
+        <h2 id="field-title" class="t-h2">{field.title}</h2>
+        <p class="mt-6 text-lg leading-relaxed">{field.intro}</p>
+      </div>
+      <dl class="grid gap-0 lg:col-span-6 lg:col-start-7">
+        {field.stats.map((s) => (
+          <div class="flex flex-col-reverse gap-1 border-b border-line py-7 first:border-t sm:flex-row-reverse sm:items-baseline sm:justify-between sm:gap-8">
+            <dt class="text-lg sm:text-right">{s.label}</dt>
+            <dd class="font-display text-6xl font-semibold tracking-tight text-white lg:text-7xl">{s.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <CtaBand title={cta.title} body={cta.body} button={cta.button} />
+</Base>
+
+<style>
+  .mission::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(rgb(77 171 247 / 0.18) 1px, transparent 1.4px);
+    background-size: 24px 24px;
+    mask-image: linear-gradient(120deg, transparent 45%, #000);
+  }
+</style>

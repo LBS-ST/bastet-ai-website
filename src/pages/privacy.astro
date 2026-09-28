@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { PRIVACY, SITE } from '../content/site';
+import { rich } from '../lib/rich';
+import { privacySchema } from '../lib/schema';
+
+// Link the contact address wherever the policy text mentions it.
+const linkEmail = (html: string) => html.replace(SITE.email, `<a class="link" href="mailto:${SITE.email}">${SITE.email}</a>`);
+---
+<Base page="privacy" schema={privacySchema}>
+  <PageHero title={PRIVACY.title} sub={PRIVACY.updated} compact />
+
+  <section class="surface-light pb-24 pt-14 lg:pb-32 lg:pt-20">
+    <div class="wrap">
+      <article class="prose-bastet text-lg leading-relaxed">
+        {PRIVACY.sections.map((s, i) => (
+          <>
+            <h2 class:list={{ '!mt-0': i === 0 }}>{s.title}</h2>
+            {s.body?.map((p) => <p set:html={linkEmail(rich(p))} />)}
+            {s.list && (
+              <ul>
+                {s.list.map((li) => <li set:html={rich(li)} />)}
+              </ul>
+            )}
+          </>
+        ))}
+      </article>
+    </div>
+  </section>
+</Base>

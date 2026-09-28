@@ -1,0 +1,145 @@
+---
+import { Image } from 'astro:assets';
+import logoWhite from '../assets/brand/bastet-logo-white.png';
+import Icon from './Icon.astro';
+import { NAV, NAV_CTA, SITE, UI, type PageId } from '../content/site';
+
+interface Props {
+  page: PageId | null;
+}
+const { page } = Astro.props;
+---
+<header class="site-header" data-header>
+  <div class="wrap flex h-[var(--header-h)] items-center justify-between gap-6">
+    <a href="/" class="-m-2 flex shrink-0 items-center p-2" aria-label={`${SITE.name} home`}>
+      <Image src={logoWhite} alt="" width={120} class="h-auto w-[104px] lg:w-[120px]" loading="eager" />
+    </a>
+
+    <nav aria-label="Main" class="hidden lg:block">
+      <ul class="flex items-center gap-7 xl:gap-9">
+        {NAV.map((item) => (
+          <li>
+            <a
+              class="nav-link"
+              href={item.href}
+              aria-current={item.page && item.page === page ? 'page' : undefined}
+              {...(item.external ? { target: '_blank', rel: 'noopener' } : {})}
+            >
+              {item.label}
+              {item.external && <span class="sr-only"> {UI.newTab}</span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href={NAV_CTA.href} class="btn btn-primary hidden !min-h-10 !px-5 !text-[0.9375rem] sm:inline-flex">{NAV_CTA.label}</a>
+      <button
+        type="button"
+        class="-mr-2 inline-flex size-11 items-center justify-center rounded-full text-white lg:hidden"
+        aria-label={UI.menuOpen}
+        aria-haspopup="dialog"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+        data-menu-open
+      >
+        <Icon name="menu" class="size-6" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Native <dialog> + showModal(): focus trap, Escape-to-close and inert background for free. -->
+<dialog id="mobile-menu" class="mobile-menu" aria-label="Menu" data-menu>
+  <div class="flex h-full flex-col">
+    <div class="wrap flex h-[var(--header-h)] shrink-0 items-center justify-between">
+      <a href="/" class="-m-2 flex items-center p-2" aria-label={`${SITE.name} home`}>
+        <Image src={logoWhite} alt="" width={120} class="h-auto w-[104px]" />
+      </a>
+      <button type="button" class="-mr-2 inline-flex size-11 items-center justify-center rounded-full text-white" aria-label={UI.menuClose} data-menu-close>
+        <Icon name="close" class="size-6" />
+      </button>
+    </div>
+    <nav aria-label="Mobile" class="wrap flex flex-1 flex-col justify-between pb-[max(2rem,env(safe-area-inset-bottom))] pt-6">
+      <ul class="flex flex-col">
+        {NAV.map((item) => (
+          <li class="border-b border-white/10">
+            <a
+              href={item.href}
+              class="flex min-h-14 items-center justify-between py-3 font-display text-[1.75rem] font-medium tracking-tight text-white aria-[current=page]:text-glow"
+              aria-current={item.page && item.page === page ? 'page' : undefined}
+              {...(item.external ? { target: '_blank', rel: 'noopener' } : {})}
+            >
+              {item.label}
+              {item.external && (<><Icon name="external" class="size-5 text-fog" /><span class="sr-only"> {UI.newTab}</span></>)}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a href={NAV_CTA.href} class="btn btn-primary mt-10 w-full">{NAV_CTA.label}</a>
+    </nav>
+  </div>
+</dialog>
+
+<style>
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: env(safe-area-inset-top) 0 0;
+    border: 0;
+    background: var(--color-night);
+    color: #fff;
+  }
+  .mobile-menu::backdrop { background: transparent; }
+  .mobile-menu[open] { animation: menu-in 220ms ease-out; }
+  @keyframes menu-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>
+
+<script>
+  // ── Glass → solid ─────────────────────────────────────────────────────
+  // Solid once the page's [data-hero] bottom edge reaches the header's bottom edge.
+  // Stage 2's pinned fly-through keeps the same [data-hero] hook, so this needs no change.
+  const header = document.querySelector<HTMLElement>('[data-header]')!;
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  const update = () => {
+    const solid = !hero || hero.getBoundingClientRect().bottom <= header.offsetHeight;
+    header.classList.toggle('is-solid', solid);
+  };
+  update();
+  addEventListener('scroll', update, { passive: true });
+  addEventListener('resize', update);
+  addEventListener('orientationchange', update);
+
+  // ── Mobile menu ───────────────────────────────────────────────────────
+  const dialog = document.querySelector<HTMLDialogElement>('[data-menu]')!;
+  const opener = document.querySelector<HTMLButtonElement>('[data-menu-open]')!;
+  const closer = dialog.querySelector<HTMLButtonElement>('[data-menu-close]')!;
+
+  const open = () => {
+    dialog.showModal();
+    opener.setAttribute('aria-expanded', 'true');
+    document.documentElement.classList.add('menu-open');
+    closer.focus();
+  };
+  const close = () => dialog.close();
+
+  opener.addEventListener('click', open);
+  closer.addEventListener('click', close);
+  dialog.addEventListener('close', () => {
+    opener.setAttribute('aria-expanded', 'false');
+    document.documentElement.classList.remove('menu-open');
+    opener.focus();
+  });
+  dialog.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+  // Leaving the mobile breakpoint with the menu open: close it.
+  matchMedia('(min-width: 64rem)').addEventListener('change', (e) => e.matches && dialog.open && close());
+</script>

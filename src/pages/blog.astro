@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { BLOG, UI } from '../content/site';
+import { blogSchema } from '../lib/schema';
+---
+<Base page="blog" schema={blogSchema}>
+  <!-- The blog lives on Ghost; this page is the crawlable, on-domain door to it. -->
+  <div class="blog-door">
+    <PageHero title={BLOG.title} sub={BLOG.sub}>
+      <a href={BLOG.button.href} target="_blank" rel="noopener" class="btn btn-primary mt-10">
+        {BLOG.button.label}<Icon name="external" class="size-4" /><span class="sr-only"> {UI.newTab}</span>
+      </a>
+    </PageHero>
+  </div>
+</Base>
+
+<style>
+  .blog-door :global(.page-hero) { min-height: 78svh; display: flex; align-items: center; }
+</style>

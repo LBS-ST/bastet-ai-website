@@ -1,0 +1,27 @@
+---
+import Icon from './Icon.astro';
+import { HOME } from '../content/site';
+const { title, items } = HOME.faq;
+---
+<section class="surface-mist band" aria-labelledby="faq-title">
+  <div class="wrap grid gap-10 lg:grid-cols-12 lg:gap-8">
+    <h2 id="faq-title" class="t-h2 lg:sticky lg:top-[calc(var(--header-h)+2rem)] lg:col-span-4 lg:self-start">{title}</h2>
+    <div class="lg:col-span-8">
+      {items.map((f) => (
+        <details class="faq group border-b border-night/12 first:border-t" name="faq">
+          <summary class="flex min-h-16 cursor-pointer list-none items-center justify-between gap-6 py-5 font-display text-lg font-semibold leading-snug text-night lg:text-xl">
+            {f.q}
+            <span class="grid size-9 shrink-0 place-items-center rounded-full bg-white text-blue transition-transform duration-200 group-open:rotate-45">
+              <Icon name="plus" class="size-5" />
+            </span>
+          </summary>
+          <p class="max-w-[62ch] pb-7 pr-12">{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq summary::-webkit-details-marker { display: none; }
+</style>

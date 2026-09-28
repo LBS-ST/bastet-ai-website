@@ -1,0 +1,85 @@
+---
+import '../styles/global.css';
+import displayFont from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
+import bodyFont from '@fontsource-variable/ibm-plex-sans/files/ibm-plex-sans-latin-wght-normal.woff2?url';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsApp from '../components/WhatsApp.astro';
+import { ROUTES, SEO, SITE, TRACKING, UI, type PageId } from '../content/site';
+import { organization } from '../lib/schema';
+
+interface Props {
+  /** null = 404 (noindex, no canonical) */
+  page: PageId | null;
+  title?: string;
+  description?: string;
+  /** Page-level JSON-LD nodes, merged into one @graph with the Organization node. */
+  schema?: Record<string, unknown>[];
+}
+const { page, schema = [] } = Astro.props;
+const title = Astro.props.title ?? (page ? SEO[page].title : SITE.name);
+const description = Astro.props.description ?? (page ? SEO[page].description : '');
+
+// Self-referencing canonical from the route table, never from the request URL.
+const canonical = page ? new URL(ROUTES[page], SITE.url).href : undefined;
+const ogImage = new URL('/og-image.png', SITE.url).href;
+const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': [organization, ...schema] }).replace(/</g, '\\u003c');
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- /index.html is never canonical: send visitors to the clean root. -->
+    <script is:inline>
+      if (/\/index\.html$/.test(location.pathname)) location.replace(location.pathname.replace(/index\.html$/, '') + location.search + location.hash);
+    </script>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {canonical ? <link rel="canonical" href={canonical} /> : <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#1A2333" />
+    <meta name="google-site-verification" content={TRACKING.gsc} />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+    <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="482" />
+    <meta property="og:image:height" content="508" />
+    <meta property="og:image:alt" content={SITE.name} />
+    <meta property="og:locale" content="en_US" />
+    <!-- The supplied og-image is near-square, so the square "summary" card crops it cleanly. -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- GA4 (override with PUBLIC_GA4_ID) -->
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${TRACKING.ga4}`}></script>
+    <script is:inline define:vars={{ id: TRACKING.ga4 }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', id);
+    </script>
+
+    <script type="application/ld+json" set:html={jsonLd} />
+  </head>
+  <body class="min-h-dvh overflow-x-clip">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-night">{UI.skip}</a>
+    <Header page={page} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <WhatsApp />
+  </body>
+</html>
