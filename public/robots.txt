@@ -29,4 +29,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://bastet-tech.ai/sitemap.xml
+Sitemap: https://www.bastet-tech.ai/sitemap.xml

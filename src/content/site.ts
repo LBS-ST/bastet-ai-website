@@ -7,7 +7,7 @@ export const SITE = {
   legalName: 'Bastet AI Pesttech Limited',
   tagline: 'Make the Pest Visible',
   positioning: 'Professional Pesttech solutions leveraging AI, computer vision, and IoT sensors',
-  url: 'https://bastet-tech.ai',
+  url: 'https://www.bastet-tech.ai',
   email: 'info@bastet-tech.ai',
   blog: 'https://blog.bastet-tech.ai',
   linkedin: 'https://www.linkedin.com/company/bastet-tech/',

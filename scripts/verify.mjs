@@ -3,7 +3,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 const D = 'dist';
-const SITE = 'https://bastet-tech.ai';
+const SITE = 'https://www.bastet-tech.ai';
 const fails = [];
 const ok = (cond, msg) => (cond ? console.log(`  ✓ ${msg}`) : fails.push(msg));
 const read = (p) => readFileSync(join(D, p), 'utf8');

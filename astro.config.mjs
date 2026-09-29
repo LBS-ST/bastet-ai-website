@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 // serves at /solution with no trailing-slash redirect, so canonical and served URLs match.
 // The sitemap is a hand-rolled endpoint (src/pages/sitemap.xml.ts) listing exactly 7 URLs.
 export default defineConfig({
-  site: 'https://bastet-tech.ai',
+  site: 'https://www.bastet-tech.ai',
   output: 'static',
   trailingSlash: 'never',
   build: { format: 'file' },

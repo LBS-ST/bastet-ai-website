@@ -3,7 +3,7 @@
 > Make the Pest Visible. Bastet is a professional Pesttech solutions leveraging AI, computer vision, and IoT sensors to automate monitoring and detection of pest activity. Move beyond traditional manual methods to intelligent, data-driven pest management.
 
 Legal name: Bastet AI Pesttech Limited
-Website: https://bastet-tech.ai
+Website: https://www.bastet-tech.ai
 Email: info@bastet-tech.ai
 Blog: https://blog.bastet-tech.ai
 LinkedIn: https://www.linkedin.com/company/bastet-tech/
@@ -26,26 +26,26 @@ AI-Enhanced Pest Control System built by experienced pest control and IT profess
 
 ## Pages
 
-- [Home](https://bastet-tech.ai/): Bastet provides AI vision and IoT smart pest control systems for commercial buildings.
-- [Solutions](https://bastet-tech.ai/solution): Explore Bastet's AI pest control platform: computer vision cameras, IoT smart traps, sticky trap analysis, and a unified dashboard for commercial facilities.
-- [Datasheets](https://bastet-tech.ai/datasheet): Download datasheets for Bastet AI's LoRa gateway, PIR sensors, smart trap sensors, AI box, and mobile platform.
-- [About](https://bastet-tech.ai/about): Bastet AI combines pest control veterans with IT engineers to deliver field-tested, data-driven smart pest management for commercial facilities.
-- [Contact](https://bastet-tech.ai/contact): Schedule a personalized demo of our AI vision and IoT pest monitoring solutions for your facility.
+- [Home](https://www.bastet-tech.ai/): Bastet provides AI vision and IoT smart pest control systems for commercial buildings.
+- [Solutions](https://www.bastet-tech.ai/solution): Explore Bastet's AI pest control platform: computer vision cameras, IoT smart traps, sticky trap analysis, and a unified dashboard for commercial facilities.
+- [Datasheets](https://www.bastet-tech.ai/datasheet): Download datasheets for Bastet AI's LoRa gateway, PIR sensors, smart trap sensors, AI box, and mobile platform.
+- [About](https://www.bastet-tech.ai/about): Bastet AI combines pest control veterans with IT engineers to deliver field-tested, data-driven smart pest management for commercial facilities.
+- [Contact](https://www.bastet-tech.ai/contact): Schedule a personalized demo of our AI vision and IoT pest monitoring solutions for your facility.
 - [Blog](https://blog.bastet-tech.ai): Articles on AI pest control, IoT monitoring, and smart facility pest management from the Bastet AI team.
-- [Privacy Policy](https://bastet-tech.ai/privacy)
+- [Privacy Policy](https://www.bastet-tech.ai/privacy)
 
 ## Product datasheets (PDF)
 
-- [Bastet Platform Mobile App](https://bastet-tech.ai/datasheets/Bastet_Platform_Mobile_app.pdf) (Software): Mobile application for real-time pest monitoring and management
-- [Bastet LoRa Gateway](https://bastet-tech.ai/datasheets/Bastet_Lora_Gateway.pdf) (Gateway): Long-range wireless gateway for IoT sensor connectivity
-- [Bastet LoRa PIR Sensor](https://bastet-tech.ai/datasheets/Bastet_Lora_PIR.pdf) (Sensor): Long-range passive infrared motion detection sensor
-- [Bastet LoRa Trap Sensor](https://bastet-tech.ai/datasheets/Bastet_Lora_Trap_Sensor.pdf) (Sensor): Long-range wireless trap sensor for remote capture detection
-- [Bastet Sensing Camera](https://bastet-tech.ai/datasheets/Bastet_Sensing_Camera.pdf) (Camera): AI-powered camera for visual pest detection and analysis
-- [Bastet Zigbee Smart Plug](https://bastet-tech.ai/datasheets/Bastet_Zigbee_Smart_Plug.pdf) (Accessory): Smart plug for power management and device control
-- [Bastet Zigbee Trap Sensor Component](https://bastet-tech.ai/datasheets/Bastet_Zigbee_Trap_Sensor_Component.pdf) (Sensor): Component specifications for trap sensor integration
-- [Bastet Zigbee Trap Sensor](https://bastet-tech.ai/datasheets/Bastet_Zigbee_Trap_Sensor.pdf) (Sensor): Wireless trap sensor for real-time capture detection
-- [Bastet Zigbee PIR Sensor](https://bastet-tech.ai/datasheets/Bastet_Zigbee_PIR.pdf) (Sensor): Zigbee-enabled passive infrared motion sensor
-- [Bastet Zigbee Gateway](https://bastet-tech.ai/datasheets/Bastet_Zigbee_Gateway.pdf) (Gateway): Central hub for Zigbee device network management
+- [Bastet Platform Mobile App](https://www.bastet-tech.ai/datasheets/Bastet_Platform_Mobile_app.pdf) (Software): Mobile application for real-time pest monitoring and management
+- [Bastet LoRa Gateway](https://www.bastet-tech.ai/datasheets/Bastet_Lora_Gateway.pdf) (Gateway): Long-range wireless gateway for IoT sensor connectivity
+- [Bastet LoRa PIR Sensor](https://www.bastet-tech.ai/datasheets/Bastet_Lora_PIR.pdf) (Sensor): Long-range passive infrared motion detection sensor
+- [Bastet LoRa Trap Sensor](https://www.bastet-tech.ai/datasheets/Bastet_Lora_Trap_Sensor.pdf) (Sensor): Long-range wireless trap sensor for remote capture detection
+- [Bastet Sensing Camera](https://www.bastet-tech.ai/datasheets/Bastet_Sensing_Camera.pdf) (Camera): AI-powered camera for visual pest detection and analysis
+- [Bastet Zigbee Smart Plug](https://www.bastet-tech.ai/datasheets/Bastet_Zigbee_Smart_Plug.pdf) (Accessory): Smart plug for power management and device control
+- [Bastet Zigbee Trap Sensor Component](https://www.bastet-tech.ai/datasheets/Bastet_Zigbee_Trap_Sensor_Component.pdf) (Sensor): Component specifications for trap sensor integration
+- [Bastet Zigbee Trap Sensor](https://www.bastet-tech.ai/datasheets/Bastet_Zigbee_Trap_Sensor.pdf) (Sensor): Wireless trap sensor for real-time capture detection
+- [Bastet Zigbee PIR Sensor](https://www.bastet-tech.ai/datasheets/Bastet_Zigbee_PIR.pdf) (Sensor): Zigbee-enabled passive infrared motion sensor
+- [Bastet Zigbee Gateway](https://www.bastet-tech.ai/datasheets/Bastet_Zigbee_Gateway.pdf) (Gateway): Central hub for Zigbee device network management
 
 ## FAQ
 
