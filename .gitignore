@@ -23,3 +23,7 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 .vscode/
+
+# fly-through production sources (large; local only)
+production/flythrough/**/*.mp4
+production/flythrough/inspect/

@@ -19,7 +19,8 @@ Cloudflare Pages: build `npm run build`, output `dist`, Node 22.
 
 - `src/content/site.ts`: every visitor-facing string, SEO titles/descriptions, routes, tracking IDs.
 - `src/content/flythrough.ts`: homepage hero copy + the Stage 2 beat/chapter timeline.
-- `src/components/FlythroughHero.astro`: hero. Stage 1 poster; the Stage 2 canvas mounts at the `TODO(Stage 2)` comment.
+- `src/components/FlythroughHero.astro` + `src/scripts/flythrough/`: the scroll-scrubbed fly-through (pinned canvas; `?static` or reduced motion shows stacked chapters over stills).
+- `production/flythrough/`: stills, scripts and `PRODUCTION.md` for the footage (`*.mp4` are local only).
 - `src/lib/schema.ts`: JSON-LD per page.
 - `src/pages/sitemap.xml.ts`: the 7-URL sitemap. `public/robots.txt`, `public/llms.txt`, `public/_headers`.
 

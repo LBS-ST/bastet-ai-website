@@ -7,6 +7,7 @@ const SITE = 'https://bastet-tech.ai';
 const fails = [];
 const ok = (cond, msg) => (cond ? console.log(`  ✓ ${msg}`) : fails.push(msg));
 const read = (p) => readFileSync(join(D, p), 'utf8');
+const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(join(dir, e.name)) : [join(dir, e.name)]));
 
 const pages = {
   'index.html': { canonical: `${SITE}/`, types: ['Organization', 'WebSite', 'FAQPage'], text: ['Make the Pest Visible', 'Request a Live Demo', 'Learn How It Works', 'How do I get started with Bastet?'] },
@@ -66,8 +67,42 @@ const ct = read('contact.html');
 ok(!/<form[\s>]/.test(ct), 'contact page has no form');
 for (const f of Object.keys(pages)) ok(read(f).includes('https://wa.me/85265645417?text=Hello%20Bastet%20AI%2C%20I%20would%20like%20to%20enquire%20about%20your%20solutions.'), `${f}: WhatsApp button`);
 
+console.log('Fly-through');
+const flight = readFileSync('src/content/flythrough.ts', 'utf8');
+ok(/FRAMES_ENABLED = true/.test(flight), 'FRAMES_ENABLED = true');
+const mf = {
+  count: Number(flight.match(/count: (\d+)/)?.[1]),
+  fps: Number(flight.match(/fps: (\d+)/)?.[1]),
+  pattern: flight.match(/pattern: '([^']+)'/)?.[1],
+  portraitPattern: flight.match(/portraitPattern: '([^']+)'/)?.[1],
+  poster: flight.match(/poster: '([^']+)'/)?.[1],
+};
+const frameFiles = readdirSync(join(D, 'flythrough/frames')).filter((f) => f.endsWith('.webp'));
+ok(frameFiles.length === mf.count, `landscape frames = manifest.count (${frameFiles.length}/${mf.count})`);
+if (mf.portraitPattern) {
+  const pf = readdirSync(join(D, 'flythrough/portrait')).filter((f) => f.endsWith('.webp'));
+  ok(pf.length === mf.count, `portrait frames = manifest.count (${pf.length})`);
+}
+ok(mf.poster && existsSync(join(D, mf.poster)), `poster ${mf.poster}`);
+const at = (pat, i) => join(D, pat.replace('{i}', String(i).padStart(4, '0')));
+[0, Math.floor(mf.count / 2), mf.count - 1].forEach((i) => ok(existsSync(at(mf.pattern, i)), `frame ${i} exists`));
+ok(!existsSync(at(mf.pattern, mf.count)), 'no frame beyond manifest.count');
+const beatTimes = [...flight.matchAll(/from: ([\d.]+), to: ([\d.]+)/g)].map((x) => [Number(x[1]), Number(x[2])]);
+ok(beatTimes.length === 7, `7 beats timed (${beatTimes.length})`);
+ok(beatTimes.every(([a, b], i) => b >= a && (i === 0 || a === beatTimes[i - 1][1])), 'beats are contiguous and non-decreasing');
+ok(Math.max(...beatTimes.map((b) => b[1])) * mf.fps <= mf.count, 'beats end within the footage');
+const home = read('index.html');
+ok(home.includes('data-ft-canvas') && home.includes(mf.poster), 'home renders canvas + poster');
+const stills = [...home.matchAll(/--still:url\(([^)]+)\)/g)].map((x) => x[1]);
+ok(stills.length === 5, `5 chapter stills (${stills.length})`);
+stills.forEach((s) => ok(existsSync(join(D, s.split('?')[0])), `still ${s}`));
+const committed = walk('src').filter((f) => /\.(ts|astro|css|mjs|js|md)$/.test(f)).concat(walk('scripts'), walk('public').filter((f) => /\.(txt|md|json|xml)$/.test(f)), ['production/flythrough/PRODUCTION.md'].filter(existsSync));
+// Words that must never describe the camera (flythrough spec). Split so this file doesn't contain them.
+const FORBIDDEN = new RegExp(`\\b(${['dro' + 'ne', 'quad' + 'copter', 'U' + 'AV'].join('|')})\\b`, 'i');
+committed.forEach((f) => { if (FORBIDDEN.test(readFileSync(f, 'utf8'))) fails.push(`forbidden camera wording in ${f}`); });
+ok(true, 'no forbidden camera wording in source');
+
 console.log('Content hygiene (all emitted text files)');
-const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(join(dir, e.name)) : [join(dir, e.name)]));
 const textFiles = walk(D).filter((f) => /\.(html|txt|xml|js|css|json)$/.test(f));
 const CJK = /[　-〿぀-ヿ㐀-䶿一-鿿豈-﫿＀-￯]/;
 for (const f of textFiles) {

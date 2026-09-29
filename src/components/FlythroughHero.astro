@@ -1,137 +1,220 @@
 ---
-// Homepage hero. Stage 1 = static poster; Stage 2 = scroll-scrubbed fly-through.
+// Homepage hero: the scroll-scrubbed fly-through ("Make the Pest Visible").
 //
-// Anatomy (keep it when wiring Stage 2):
-//   section[data-hero]     → header glass/solid hook (Header.astro). In Stage 2 this becomes the
-//                            tall pinned track: height = sum(BEATS[].vh) * 100svh (+ mobileVh on phones).
-//   .flight-stage          → sticky full-viewport stage; poster now, canvas later.
-//   .flight-chapter        → semantic HTML copy per chapter (CHAPTERS in content/flythrough.ts).
-//                            Stage 1 renders only the at-rest chapter ("arrive").
-import { Picture } from 'astro:assets';
-import poster from '../assets/brand/hero-circuit.png';
-import { BEATS, FRAMES_ENABLED, HERO } from '../content/flythrough';
+//   section[data-hero]  → header glass/solid hook (Header.astro): solid once this tall
+//                         track's bottom edge passes the header.
+//   .ft-stage           → sticky 100svh stage: poster (first frame) → canvas.
+//   .ft-chapter         → semantic HTML copy per chapter, faded in/out by the controller.
+//
+// Two modes, chosen before first paint by the inline script below:
+//   live   (html.ft-live) → pinned canvas scrubbed by src/scripts/flythrough.
+//   static (reduced motion, Save-Data, low-memory device, ?static, no JS) → the chapters stack
+//          as normal page sections, each over a representative still. No frames are fetched.
+import { BEATS, CHAPTERS, FRAMES_ENABLED, manifest, type Chapter, type ChapterId } from '../content/flythrough';
+import { UI } from '../content/site';
+import { frameUrl } from '../scripts/flythrough/frames';
 
-// Two balanced lines so the detection bracket can hug the text (a wrapped inline-block
-// would otherwise stretch to the full column). Same string, only the break is fixed.
-const words = HERO.heading.split(' ');
+const m = FRAMES_ENABLED ? manifest : null;
+
+// Chapters in the order the flight reaches them.
+const order: ChapterId[] = [];
+for (const b of BEATS) if (b.chapter && !order.includes(b.chapter)) order.push(b.chapter);
+
+const beatVh = (mobile: boolean) =>
+  BEATS.reduce((s, b) => s + (mobile ? b.mobileVh ?? b.vh : b.vh) + (b.hold?.start ?? 0) + (b.hold?.end ?? 0), 0);
+
+// Two balanced lines so the detection bracket can hug the headline.
+const words = CHAPTERS.arrive.heading.split(' ');
 const cut = Math.floor(words.length / 2);
 const lines = [words.slice(0, cut).join(' '), words.slice(cut).join(' ')];
 ---
+{m && (
+  <script is:inline>
+    (function () {
+      var n = navigator, c = n.connection;
+      var still = /[?&]static\b/.test(location.search) ||
+        matchMedia('(prefers-reduced-motion: reduce)').matches ||
+        (c && c.saveData) || (n.deviceMemory && n.deviceMemory < 2);
+      if (!still) document.documentElement.classList.add('ft-live');
+    })();
+  </script>
+)}
+
 <section
-  class="flight relative isolate overflow-clip bg-abyss"
+  class="ft relative isolate bg-abyss"
   aria-labelledby="hero-title"
   data-hero
   data-flythrough
-  data-frames-enabled={String(FRAMES_ENABLED)}
-  data-beats={BEATS.length}
+  style={`--ft-vh:${beatVh(false)};--ft-vh-m:${beatVh(true)}`}
 >
-  <div class="flight-stage" data-flight-stage>
-    <!-- Poster: shown immediately; in Stage 2 it stays as the load / reduced-motion / failure fallback. -->
-    <Picture
-      src={poster}
-      formats={['avif']} fallbackFormat="webp"
-      widths={[768, 1280, 1910]}
-      sizes="(min-width: 48rem) 118vw, 100vw"
-      alt=""
-      loading="eager"
-      fetchpriority="high"
-      class="flight-poster"
-    />
+  <div class="ft-stage" data-ft-stage>
+    {m && (
+      <>
+        <picture>
+          {m.portraitPoster && <source media="(max-width: 47.99rem)" srcset={m.portraitPoster} />}
+          <img class="ft-poster" data-ft-poster src={m.poster} width={m.width} height={m.height} alt="" loading="eager" fetchpriority="high" decoding="async" />
+        </picture>
+        <canvas class="ft-canvas" data-ft-canvas aria-hidden="true"></canvas>
+      </>
+    )}
 
-    {/*
-      TODO(Stage 2 — fly-through): mount the frame-sequence canvas here.
-        <canvas class="flight-canvas" data-flight-canvas aria-hidden="true"></canvas>
-      - Only when FRAMES_ENABLED && manifest && !prefers-reduced-motion.
-      - Cover-fit draw, backing store = viewport × min(devicePixelRatio, 2), per-beat focusX on phones.
-      - Piecewise scroll→frame map from BEATS (vh / mobileVh, from/to seconds × manifest.fps).
-      - Chapters fade in/hold/out inside their beats; hidden chapters get `inert`.
-      - Add a "skip the tour" link that jumps to #solutions.
-    */}
+    {order.map((id) => {
+      const c: Chapter = CHAPTERS[id];
+      return (
+        <div
+          class="ft-chapter"
+          data-chapter={id}
+          data-align={c.align}
+          data-mobile-body={String(c.mobileBody)}
+          style={m ? `--still:url(${frameUrl(m, c.still)});--still-p:url(${m.portraitPattern ? frameUrl({ ...m, pattern: m.portraitPattern }, c.still) : frameUrl(m, c.still)})` : undefined}
+        >
+          <div class="wrap ft-inner">
+            <div class="ft-copy">
+              {id === 'arrive' ? (
+                <h1 id="hero-title" class="t-display text-white">
+                  <span class="bracket hero-lock">{lines[0]}<br />{lines[1]}</span>
+                </h1>
+              ) : (
+                <h2 class="t-h1 text-white">{c.heading}</h2>
+              )}
+              {c.body && <p class="ft-body mt-6 max-w-[35rem] text-fog lg:mt-8">{c.body}</p>}
+              {(c.primary || c.secondary) && (
+                <div class="mt-8 flex flex-wrap gap-3 lg:mt-10">
+                  {c.primary && <a href={c.primary.href} class="btn btn-primary">{c.primary.label}</a>}
+                  {c.secondary && <a href={c.secondary.href} class="btn btn-ghost ft-secondary">{c.secondary.label}</a>}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    })}
 
-    <div class="flight-scrim" aria-hidden="true"></div>
-  </div>
-
-  <div class="flight-chapter wrap" data-chapter="arrive">
-    <div class="max-w-[46rem]">
-      <h1 id="hero-title" class="t-display text-white">
-        <span class="bracket hero-lock">{lines[0]}<br />{lines[1]}</span>
-      </h1>
-      <p class="hero-sub mt-6 max-w-[35rem] text-fog sm:mt-7 lg:mt-9">{HERO.body}</p>
-      <div class="mt-8 flex flex-wrap gap-3 lg:mt-11">
-        <a href={HERO.primary.href} class="btn btn-primary">{HERO.primary.label}</a>
-        <a href={HERO.secondary.href} class="btn btn-ghost">{HERO.secondary.label}</a>
-      </div>
-    </div>
+    {m && <a class="ft-skip btn btn-ghost" href="#solutions">{UI.skipTour}</a>}
+    <div class="ft-progress" aria-hidden="true"></div>
   </div>
 </section>
 
+<script>
+  import { initFlythrough } from '../scripts/flythrough';
+  const el = document.querySelector<HTMLElement>('[data-flythrough]');
+  if (el) initFlythrough(el);
+</script>
+
 <style>
-  .flight {
-    display: grid;
-    min-height: 100svh;
-  }
-  .flight-stage {
-    grid-area: 1 / 1;
+  /* ── Static mode (default; also the no-JS and reduced-motion view) ─────────── */
+  .ft-chapter {
     position: relative;
+    isolation: isolate;
+    display: flex;
     min-height: 100svh;
     overflow: hidden;
   }
-  .flight-chapter {
-    grid-area: 1 / 1;
-    position: relative;
-    z-index: 1;
+  .ft-chapter + .ft-chapter { min-height: 80svh; }
+  /* Representative still per chapter. A CSS background (not an <img>) so live mode,
+     where it is never applied, never downloads it. */
+  :global(html:not(.ft-live)) .ft-chapter { background: var(--color-abyss) var(--still-p) 50% 50% / cover no-repeat; }
+  @media (min-width: 48rem) {
+    :global(html:not(.ft-live)) .ft-chapter { background-image: var(--still); }
+  }
+  .ft-chapter::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(to top, var(--color-abyss) 30%, rgb(19 26 39 / 0.55) 60%, rgb(19 26 39 / 0.2));
+  }
+  .ft-inner {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     padding-top: calc(var(--header-h) + 2rem);
-    padding-bottom: max(3rem, env(safe-area-inset-bottom));
+    padding-bottom: max(3.5rem, env(safe-area-inset-bottom));
   }
+  .ft-copy { max-width: 46rem; }
+  .ft-body { font-size: 1.0625rem; line-height: 1.6; text-shadow: 0 1px 12px rgb(19 26 39 / 0.8); }
 
-  /* Phones: the lit hex sits in the top half, copy anchors to the bottom over a
-     bottom-up scrim (the same composition the Stage 2 chapters use on phones). */
-  .flight-poster :global(img),
-  :global(.flight-poster) {
-    position: absolute;
-    top: var(--header-h);
-    left: 0;
-    width: 100%;
-    height: 58%;
-    object-fit: cover;
-    object-position: 50% 45%;
+  @media (min-width: 48rem) {
+    .ft-chapter::before {
+      background:
+        linear-gradient(90deg, rgb(19 26 39 / 0.94) 0%, rgb(19 26 39 / 0.82) 42%, rgb(19 26 39 / 0.1) 74%),
+        linear-gradient(to top, rgb(19 26 39 / 0.6), transparent 30%);
+    }
+    .ft-chapter[data-align='right']::before {
+      background:
+        linear-gradient(270deg, rgb(19 26 39 / 0.94) 0%, rgb(19 26 39 / 0.82) 42%, rgb(19 26 39 / 0.1) 74%),
+        linear-gradient(to top, rgb(19 26 39 / 0.6), transparent 30%);
+    }
+    .ft-inner { justify-content: center; padding-bottom: 6rem; }
+    .ft-chapter[data-align='right'] .ft-copy { margin-left: auto; max-width: 34rem; }
+    .ft-body { font-size: 1.1875rem; }
   }
-  .flight-scrim {
+  @media (min-width: 64rem) { .ft-body { font-size: 1.3125rem; } }
+
+  .ft-progress, .ft-skip { display: none; }
+
+  /* ── Live mode: pinned stage, canvas, chapters stacked in the stage ────────── */
+  :global(html.ft-live) .ft { height: calc((var(--ft-vh) + 1) * 100svh); }
+  @media (max-width: 47.99rem) {
+    :global(html.ft-live) .ft { height: calc((var(--ft-vh-m) + 1) * 100svh); }
+  }
+  :global(html.ft-live) .ft-stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+  }
+  .ft-poster, .ft-canvas {
     position: absolute;
     inset: 0;
-    background:
-      linear-gradient(to bottom, var(--color-abyss) 0%, transparent 14%),
-      linear-gradient(to top, var(--color-abyss) 42%, rgb(19 26 39 / 0.6) 62%, transparent 80%);
+    width: 100%;
+    height: 100%;
   }
-
-  /* Wider screens: image fills the stage, hex shifted right of the headline. */
-  @media (min-width: 48rem) {
-    :global(.flight-poster) {
-      top: 0;
-      left: 16%;
-      width: 118%;
-      height: 100%;
-      object-position: 50% 50%;
-    }
-    .flight-scrim {
-      background:
-        linear-gradient(90deg, var(--color-abyss) 8%, rgb(19 26 39 / 0.82) 36%, rgb(19 26 39 / 0.15) 64%, transparent 80%),
-        linear-gradient(to top, var(--color-night) 0%, transparent 22%),
-        linear-gradient(to bottom, rgb(19 26 39 / 0.6) 0%, transparent 18%);
-    }
-    .flight-chapter {
-      justify-content: center;
-      padding-top: calc(var(--header-h) + 4rem);
-      padding-bottom: 6rem;
+  .ft-poster { object-fit: cover; transition: opacity 300ms ease; }
+  :global(html:not(.ft-live)) :is(.ft-poster, .ft-canvas) { display: none; }
+  :global(.ft-stage.is-drawn) .ft-poster { opacity: 0; }
+  :global(html.ft-live) .ft-chapter {
+    position: absolute;
+    inset: 0;
+    min-height: 0;
+    opacity: 0;
+    will-change: opacity;
+  }
+  :global(html.ft-live) .ft-chapter:first-of-type { opacity: 1; }
+  :global(html.ft-live) .ft-copy { transform: translateY(var(--ft-rise, 0)); }
+  /* Phones: one short heading per chapter during the flight; body returns at the reveal. */
+  @media (max-width: 47.99rem) {
+    :global(html.ft-live) .ft-chapter[data-mobile-body='false'] .ft-body,
+    :global(html.ft-live) .ft-chapter[data-chapter='arrive'] .ft-secondary { display: none; }
+    :global(html.ft-live) .ft-chapter::before {
+      background: linear-gradient(to top, rgb(19 26 39 / 0.9) 18%, rgb(19 26 39 / 0.4) 45%, transparent 65%),
+        linear-gradient(to bottom, rgb(19 26 39 / 0.55), transparent 22%);
     }
   }
-
-  .hero-sub { font-size: 1.0625rem; line-height: 1.6; }
-  @media (min-width: 40rem) { .hero-sub { font-size: 1.1875rem; } }
-  @media (min-width: 64rem) { .hero-sub { font-size: 1.3125rem; } }
+  :global(html.ft-live) .ft-skip {
+    display: inline-flex;
+    position: absolute;
+    right: max(1.25rem, env(safe-area-inset-right));
+    top: calc(var(--header-h) + env(safe-area-inset-top) + 1rem);
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    background: rgb(19 26 39 / 0.45);
+    z-index: 2;
+  }
+  :global(html.ft-live) .ft-progress {
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 100%;
+    transform-origin: left;
+    transform: scaleX(var(--ft-progress, 0));
+    background: var(--color-glow);
+    z-index: 2;
+  }
 
   /* The one orchestrated moment: the detection bracket locks onto the headline on load. */
   .hero-lock {

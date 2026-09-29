@@ -484,5 +484,6 @@ export const UI = {
   linkedin: 'LinkedIn',
   facebook: 'Facebook',
   newTab: '(opens in a new tab)',
+  skipTour: 'Skip the tour',
   notFound: { title: 'Page not found', back: 'Home' },
 };
